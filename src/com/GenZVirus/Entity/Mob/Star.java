@@ -30,6 +30,7 @@ public class Star extends Mob {
 		this.x = x << 4;
 		this.y = y << 4;
 		sprite = Sprite.dummy;
+		currentHealth = maxHealth = 100;
 	}
 
 	private void move() {
@@ -74,6 +75,7 @@ public class Star extends Mob {
 			animSprite = right;
 			dir = Direction.RIGHT;
 		}
+		if (currentHealth == 0) remove();
 
 	}
 

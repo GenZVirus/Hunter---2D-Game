@@ -5,7 +5,6 @@ import java.util.List;
 import com.GenZVirus.Entity.Entity;
 import com.GenZVirus.Entity.Projectile.FireBall;
 import com.GenZVirus.Graphics.Screen;
-import com.GenZVirus.Util.Debug;
 import com.GenZVirus.Util.Vector2i;
 
 public class Shooter extends Mob {
@@ -19,15 +18,17 @@ public class Shooter extends Mob {
 		this.y = y << 4;
 		sprite = sprite.dummy;
 		fireRate = FireBall.FIRE_RATE;
+		currentHealth = maxHealth = 100;
 	}
 
 	public void update() {
 		shootRandom();
+		if (currentHealth == 0) removed = true;
 	}
 
 	private void shootRandom() {
 		if (time % 60 == 0) {
-			List<Entity> entities = level.getEntities(this, 200);
+			List<Entity> entities = level.getEntities(this, 100);
 			Player player = level.getClientPlayer();
 			if (Vector2i.getDistance(new Vector2i((int) x, (int) y), new Vector2i((int) player.getX(), (int) player.getY())) < 200) entities.add(level.getClientPlayer());
 			if (entities.size() == 0) return;
@@ -42,7 +43,7 @@ public class Shooter extends Mob {
 				fireRate--;
 			}
 			if (fireRate <= 0) {
-				shoot(x, y, dir);
+				shoot(x, y, dir, this);
 				fireRate = FireBall.FIRE_RATE;
 			}
 		}
@@ -70,7 +71,7 @@ public class Shooter extends Mob {
 				fireRate--;
 			}
 			if (fireRate <= 0) {
-				shoot(x, y, dir);
+				shoot(x, y, dir, this);
 				fireRate = FireBall.FIRE_RATE;
 			}
 		}

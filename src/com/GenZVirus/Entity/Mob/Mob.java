@@ -1,16 +1,18 @@
 package com.GenZVirus.Entity.Mob;
 
-import com.GenZVirus.Audio.SoundEffect;
 import com.GenZVirus.Entity.Entity;
 import com.GenZVirus.Entity.Projectile.FireBall;
 import com.GenZVirus.Entity.Projectile.Projectile;
+import com.GenZVirus.Entity.Projectile.SeekerMissle;
+import com.GenZVirus.Entity.Projectile.ShieldBall;
 import com.GenZVirus.Graphics.Screen;
 
 public abstract class Mob extends Entity {
 
 	protected boolean moving = false;
 	protected boolean walking = false;
-
+	public double currentHealth;
+	protected double maxHealth;
 
 	protected enum Direction {
 		UP, DOWN, LEFT, RIGHT;
@@ -24,7 +26,7 @@ public abstract class Mob extends Entity {
 			move(0, ya);
 			return;
 		}
-		
+
 		if (xa > 0) dir = Direction.RIGHT;
 		if (xa < 0) dir = Direction.LEFT;
 		if (ya > 0) dir = Direction.DOWN;
@@ -57,10 +59,20 @@ public abstract class Mob extends Entity {
 
 	public abstract void update();
 
-	protected void shoot(double x, double y, double dir) {
-		Projectile p = new FireBall(x, y, dir);
+	protected void shoot(double x, double y, double dir, Entity shooter) {
+		Projectile p = new FireBall(x, y, dir, shooter);
 		level.add(p);
 
+	}
+
+	protected void shoot2(double x, double y, double dir, Entity shooter, double pos) {
+		Projectile p = new SeekerMissle(x, y, dir, shooter, pos);
+		level.add(p);
+	}
+
+	protected void shield(double x, double y, double dir, Entity shooter, double pos, int lifeTime) {
+		Projectile p = new ShieldBall(x, y, dir, shooter, pos, lifeTime);
+		level.add(p);
 	}
 
 	private boolean collision(double xa, double ya) {

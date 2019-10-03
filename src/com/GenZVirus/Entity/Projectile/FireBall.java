@@ -1,15 +1,20 @@
 package com.GenZVirus.Entity.Projectile;
 
+import java.util.List;
+
+import com.GenZVirus.Entity.Entity;
+import com.GenZVirus.Entity.Mob.Mob;
 import com.GenZVirus.Entity.Spawner.ParticleSpawner;
 import com.GenZVirus.Graphics.Screen;
 import com.GenZVirus.Graphics.Sprite;
+import com.GenZVirus.Util.Vector2i;
 
 public class FireBall extends Projectile {
 
-	public static final int FIRE_RATE = 20; // Higher is slower!
+	public static final int FIRE_RATE = 10; // Higher is slower!
 
-	public FireBall(double x, double y, double dir) {
-		super(x, y, dir);
+	public FireBall(double x, double y, double dir, Entity shooter) {
+		super(x, y, dir, shooter);
 		range = 200;
 		speed = 4;
 		damage = 20;
@@ -20,9 +25,32 @@ public class FireBall extends Projectile {
 
 	public void update() {
 		if (level.tileCollision((int) (x + nx), (int) (y + ny), 8, 5, 5)) {
-			level.add(new ParticleSpawner((int) x, (int) y, 100, 50, level));
+			level.add(new ParticleSpawner((int) x, (int) y, 100, 20, level, true, 0.5, shooter));
 			remove();
 		}
+		List<Entity> entities = level.getEntities(this, 32);
+		entities.addAll(level.getShieldBalls(this, 32));
+		entities.add(level.getClientPlayer());
+		for (int i = 0; i < entities.size(); i++) {
+			System.out.println(entities.size());
+			Entity e = entities.get(i);
+			double distance = Vector2i.getDistance(new Vector2i((int) x, (int) y), new Vector2i((int) e.getX(), (int) e.getY()));
+			if (distance < 16 && e != shooter) {
+				if (e instanceof ShieldBall) {
+					if (((ShieldBall) e).getShooter() != shooter) {
+						level.add(new ParticleSpawner((int) x, (int) y, 100, 20, level, true, 0.5, shooter));
+						remove();
+					}
+				} else {
+					Mob m = (Mob) e;
+					if (m.currentHealth >= damage) m.currentHealth -= damage;
+					else m.currentHealth = 0;
+					level.add(new ParticleSpawner((int) x, (int) y, 100, 20, level, true, 0.5, shooter));
+					remove();
+				}
+			}
+		}
+
 		move();
 	}
 

@@ -10,7 +10,7 @@ public class Entity {
 
 	protected double x, y;
 	protected Sprite sprite;
-	private boolean removed = false;
+	protected boolean removed = false;
 	protected Level level;
 	protected final Random random = new Random();
 

@@ -24,6 +24,7 @@ public class Chaser extends Mob {
 		this.x = x << 4;
 		this.y = y << 4;
 		sprite = Sprite.dummy;
+		currentHealth = maxHealth = 100;
 	}
 
 	private void move() {

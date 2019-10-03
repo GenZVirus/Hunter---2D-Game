@@ -22,6 +22,7 @@ public class Dummy extends Mob {
 		this.x = x << 4;
 		this.y = y << 4;
 		sprite = Sprite.dummy;
+		currentHealth = maxHealth = 100;
 	}
 
 	public void update() {
@@ -56,11 +57,12 @@ public class Dummy extends Mob {
 			walking = true;
 		} else walking = false;
 
+		if (currentHealth == 0) removed = true;
 	}
 
 	public void render(Screen screen) {
 		sprite = animSprite.getSprite();
-		screen.renderMob((int) x, (int) y, sprite, 0);
+		screen.renderMob((int) x - 16, (int) y - 16, sprite, 0);
 	}
 
 }
